@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">ONI Save Editor</string>
+    <string name="upload_title">ONI Save Editor</string>
+    <string name="upload_description">Load your Oxygen Not Included save file to begin editing</string>
+    <string name="button_select_file">Select Save File</string>
+    <string name="or_divider">or</string>
+    <string name="button_load_demo">Load Demo Save</string>
+    <string name="supported_formats">Supported formats: .sav files from Oxygen Not Included</string>
+
+    <string name="file_selected_size">File selected! Size: %1$s bytes</string>
+    <string name="file_selection_canceled">File selection canceled.</string>
+    <string name="dropped_file_not_sav">Dropped file is not a .sav file.</string>
+    <string name="file_handled_size">File handled! Size: %1$s bytes</string>
+    <string name="file_handling_failed">File handling failed or was canceled.</string>
+
+    <string name="dnd_title">Drop your .sav file anywhere to begin editing</string>
+    <string name="dnd_subtitle">Release to load your Oxygen Not Included save file</string>
+    <string name="icon_upload_description">Upload Icon</string>
+    <string name="icon_save_file_description">Save File Icon</string>
+
+    <string name="window_title_test">Screen Test</string>
+    <string name="window_title_main">ONI Save Editor</string>
+</resources>

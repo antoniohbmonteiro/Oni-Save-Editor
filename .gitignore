@@ -1,0 +1,44 @@
+# Arquivos gerados pelo sistema operacional
+.DS_Store
+Thumbs.db
+
+# Arquivos gerados pelo build
+**/build/
+.gradle
+buildSrc/build/
+buildSrc/.gradle/
+
+# Arquivos de configuração local que não devem ser compartilhados
+local.properties
+
+# Arquivos da IDE (IntelliJ)
+# A pasta .idea inteira é ignorada, mas des-ignoramos arquivos de configuração
+# que podem ser compartilhados com a equipe (code style, run configurations, etc).
+.idea/
+!/.idea/artifacts
+!/.idea/checkstyle-idea.xml
+!/.idea/codeStyles
+!/.idea/compiler.xml
+!/.idea/copyright
+!/.idea/dbnavigator.xml
+!/.idea/detekt.xml
+!/.idea/dictionaries
+!/.idea/encodings.xml
+!/.idea/externalDependencies.xml
+!/.idea/gradle.xml
+!/.idea/kotlinc.xml
+!/.idea/misc.xml
+!/.idea/modules.xml
+!/.idea/runConfigurations/
+!/.idea/vcs.xml
+
+# Arquivos gerados pelo Kotlin
+.kotlin/
+
+# Arquivos de empacotamento
+*.jar
+*.war
+*.ear
+
+# Logs
+*.log
