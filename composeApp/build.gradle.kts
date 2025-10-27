@@ -30,6 +30,7 @@ kotlin {
                 implementation(compose.materialIconsExtended)
                 // JSON (kotlinx-serialization) centralizado no libs.versions.toml
                 implementation(libs.kotlinxSerializationJson)
+                implementation(libs.kermit)
 
                 // Se você quiser usar coroutines comum em todos os targets:
                 // implementation(libs.kotlinx.coroutines.core)
