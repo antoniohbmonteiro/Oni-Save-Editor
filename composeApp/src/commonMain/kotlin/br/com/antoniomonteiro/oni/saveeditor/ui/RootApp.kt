@@ -12,13 +12,13 @@ import br.com.antoniomonteiro.oni.saveeditor.ui.theme.AppTheme
 @Composable
 fun RootApp(
     onPickSav: (onLoaded: (ColonyHeader) -> Unit, onError: (String) -> Unit) -> Unit,
-    onFileDrop: (file: Any, onLoaded: (ColonyHeader) -> Unit, onError: (String) -> Unit) -> Unit = { _, _, _ -> },
-    isDragging: Boolean = false
+    onFileDrop: (file: Any, onLoaded: (ColonyHeader) -> Unit, onError: (String) -> Unit) -> Unit = { _, _, _ -> }
 ) {
     AppTheme {
         var screen by remember { mutableStateOf<AppScreen>(UploadScreen) } // Agora usa o objeto UploadScreen
         var errorMsg by remember { mutableStateOf<String?>(null) }
         var header by remember { mutableStateOf<ColonyHeader?>(null) }
+        var isDragging by remember { mutableStateOf(false) }
 
         when (val currentScreen = screen) {
             is NavigableScreen -> {
@@ -34,16 +34,20 @@ fun RootApp(
                 )
             }
             is UploadScreen -> { // Verifica o tipo do objeto, não da função Composable
-                FileDropTarget<Any>({ file -> // Envolve a tela de upload com o alvo de drop
-                    onFileDrop(file,
-                        { h ->
-                            header = h
-                            errorMsg = null
-                            screen = NavigableScreen.Colony
-                        },
-                        { msg -> errorMsg = msg }
-                    )
-                }) {
+                FileDropTarget<Any>(
+                    onDragStateChange = { isDragging = it },
+                    onFileDrop = { file -> // Envolve a tela de upload com o alvo de drop
+                        onFileDrop(
+                            file,
+                            { h ->
+                                header = h
+                                errorMsg = null
+                                screen = NavigableScreen.Colony
+                            },
+                            { msg -> errorMsg = msg }
+                        )
+                    }
+                ) {
                     // A tela de upload agora é a tela inicial
                     UploadScreenComposable( // Chama a função Composable com um alias para evitar conflito
                         // Passa a mensagem de erro para a tela de upload
