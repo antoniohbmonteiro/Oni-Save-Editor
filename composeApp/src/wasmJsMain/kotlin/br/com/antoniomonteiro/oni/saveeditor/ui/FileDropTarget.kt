@@ -35,10 +35,11 @@ actual fun <T> FileDropTarget(
         val onDragOver: (Event) -> Unit = { event ->
             event.preventDefault()
         }
-        val onDrop: (DragEvent) -> Unit = { event ->
+        val onDrop: (Event) -> Unit = { event ->
             event.preventDefault()
             onDragStateChange(false)
-            val files = event.dataTransfer?.files
+            val dragEvent = event as? DragEvent
+            val files = dragEvent?.dataTransfer?.files
             if (files != null && files.length > 0) {
                 @Suppress("UNCHECKED_CAST")
                 (files[0] as? T)?.let(onFileDrop)

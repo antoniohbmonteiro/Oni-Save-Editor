@@ -1,3 +1,4 @@
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.window.ComposeViewport
 import br.com.antoniomonteiro.oni.saveeditor.ui.RootApp
 import br.com.antoniomonteiro.oni.saveeditor.ui.model.ColonyHeader
@@ -10,6 +11,7 @@ import org.w3c.files.File
 import org.w3c.files.FileReader
 import org.w3c.files.get
 
+@OptIn(ExperimentalComposeUiApi::class)
 fun main() {
     ComposeViewport {
         RootApp(
@@ -31,7 +33,7 @@ fun main() {
                 val droppedFile = file as? File
                 if (droppedFile == null) {
                     onError("Falha ao processar o arquivo solto.")
-                    return@RootApp
+                    return@onFileDrop
                 }
                 processFile(droppedFile, onLoaded, onError)
             }
@@ -54,7 +56,7 @@ private fun processFile(file: File, onLoaded: (ColonyHeader) -> Unit, onError: (
         }
 
         val view = Uint8Array(arrayBuffer)
-        val bytes = ByteArray(view.length) { index -> view[index] }
+        val bytes = ByteArray(view.length) { index -> view[index].toByte() }
         runCatching { loadColonyHeader(bytes) }
             .onSuccess(onLoaded)
             .onFailure { error ->
