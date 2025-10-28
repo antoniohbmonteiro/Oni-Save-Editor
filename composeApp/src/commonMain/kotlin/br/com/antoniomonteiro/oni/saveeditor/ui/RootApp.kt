@@ -1,9 +1,10 @@
-import androidx.compose.runtime.*
-import br.com.antoniomonteiro.oni.saveeditor.ui.AppScreen
-import br.com.antoniomonteiro.oni.saveeditor.ui.FileDropTarget
-import br.com.antoniomonteiro.oni.saveeditor.ui.MainScaffold
-import br.com.antoniomonteiro.oni.saveeditor.ui.NavigableScreen
-import br.com.antoniomonteiro.oni.saveeditor.ui.UploadScreen
+package br.com.antoniomonteiro.oni.saveeditor.ui
+
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import br.com.antoniomonteiro.oni.saveeditor.ui.model.ColonyHeader
 import br.com.antoniomonteiro.oni.saveeditor.ui.screen.UploadScreen as UploadScreenComposable
 import br.com.antoniomonteiro.oni.saveeditor.ui.screen.DragAndDropOverlay
@@ -12,13 +13,13 @@ import br.com.antoniomonteiro.oni.saveeditor.ui.theme.AppTheme
 @Composable
 fun RootApp(
     onPickSav: (onLoaded: (ColonyHeader) -> Unit, onError: (String) -> Unit) -> Unit,
-    onFileDrop: (file: Any, onLoaded: (ColonyHeader) -> Unit, onError: (String) -> Unit) -> Unit = { _, _, _ -> },
-    isDragging: Boolean = false
+    onFileDrop: (file: Any, onLoaded: (ColonyHeader) -> Unit, onError: (String) -> Unit) -> Unit = { _, _, _ -> }
 ) {
     AppTheme {
-        var screen by remember { mutableStateOf<AppScreen>(UploadScreen) } // Agora usa o objeto UploadScreen
+        var screen by remember { mutableStateOf<AppScreen>(UploadScreen) }
         var errorMsg by remember { mutableStateOf<String?>(null) }
         var header by remember { mutableStateOf<ColonyHeader?>(null) }
+        var isDragging by remember { mutableStateOf(false) }
 
         when (val currentScreen = screen) {
             is NavigableScreen -> {
@@ -28,32 +29,34 @@ fun RootApp(
                     fileName = header?.baseName ?: "Unknown File",
                     onClose = {
                         header = null
-                        screen = UploadScreen // Navigate back to UploadScreen
+                        screen = UploadScreen
                     },
                     onSaveChanges = { println("Save Changes clicked") }
                 )
             }
-            is UploadScreen -> { // Verifica o tipo do objeto, não da função Composable
-                FileDropTarget<Any>({ file -> // Envolve a tela de upload com o alvo de drop
-                    onFileDrop(file,
-                        { h ->
-                            header = h
-                            errorMsg = null
-                            screen = NavigableScreen.Colony
-                        },
-                        { msg -> errorMsg = msg }
-                    )
-                }) {
-                    // A tela de upload agora é a tela inicial
-                    UploadScreenComposable( // Chama a função Composable com um alias para evitar conflito
-                        // Passa a mensagem de erro para a tela de upload
+            is UploadScreen -> {
+                FileDropTarget<Any>(
+                    onDragStateChange = { isDragging = it },
+                    onFileDrop = { file ->
+                        onFileDrop(
+                            file,
+                            { h ->
+                                header = h
+                                errorMsg = null
+                                screen = NavigableScreen.Colony
+                            },
+                            { msg -> errorMsg = msg }
+                        )
+                    }
+                ) {
+                    UploadScreenComposable(
                         error = errorMsg,
                         onFileSelect = {
                             onPickSav(
                                 { h ->
                                     header = h
                                     errorMsg = null
-                                    screen = NavigableScreen.Colony // Navigate to the default main screen
+                                    screen = NavigableScreen.Colony
                                 },
                                 { msg ->
                                     errorMsg = msg
@@ -62,7 +65,7 @@ fun RootApp(
                             )
                         },
                         onDemoSelect = {
-                            // TODO: Implementar lógica de carregar demo
+                            // TODO: Implement demo loading
                         }
                     )
                 }
