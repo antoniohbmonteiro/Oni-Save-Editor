@@ -6,6 +6,7 @@ import br.com.antoniomonteiro.oni.saveeditor.ui.model.loadColonyHeader
 import kotlinx.browser.document
 import org.khronos.webgl.ArrayBuffer
 import org.khronos.webgl.Uint8Array
+import org.khronos.webgl.get
 import org.w3c.dom.HTMLInputElement
 import org.w3c.files.File
 import org.w3c.files.FileReader
@@ -33,7 +34,7 @@ fun main() {
                 val droppedFile = file as? File
                 if (droppedFile == null) {
                     onError("Falha ao processar o arquivo solto.")
-                    return@onFileDrop
+                    return@RootApp
                 }
                 processFile(droppedFile, onLoaded, onError)
             }
@@ -52,16 +53,16 @@ private fun processFile(file: File, onLoaded: (ColonyHeader) -> Unit, onError: (
         val arrayBuffer = reader.result as? ArrayBuffer
         if (arrayBuffer == null) {
             onError("Não foi possível ler o conteúdo do arquivo.")
-            return@onload
+        }else{
+            val view = Uint8Array(arrayBuffer)
+            val bytes = ByteArray(view.length) { index -> view[index].toByte() }
+            runCatching { loadColonyHeader(bytes) }
+                .onSuccess(onLoaded)
+                .onFailure { error ->
+                    onError(error.message ?: "Falha ao interpretar o arquivo.")
+                }
         }
 
-        val view = Uint8Array(arrayBuffer)
-        val bytes = ByteArray(view.length) { index -> view[index].toByte() }
-        runCatching { loadColonyHeader(bytes) }
-            .onSuccess(onLoaded)
-            .onFailure { error ->
-                onError(error.message ?: "Falha ao interpretar o arquivo.")
-            }
     }
     reader.onerror = {
         onError("Falha ao ler o arquivo: ${reader.error}")
